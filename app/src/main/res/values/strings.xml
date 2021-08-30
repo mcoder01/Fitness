@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Fitness</string>
+
+    <string name="menuOption1">Schede</string>
+    <string name="menuOption2">Esercizi</string>
+    <string name="menuOption3">Crea</string>
+    <string name="menuOption4">Elimina</string>
+    <string name="menuOption5">Seleziona tutto</string>
+
+    <string name="boardListText1">Clicca + per aggiungere una scheda</string>
+    <string name="boardListText2">Crea la tua prima scheda</string>
+    <string name="boardListText3">Giorni:</string>
+
+    <string name="boardText1">Data inizio:</string>
+    <string name="boardText2">Data fine:</string>
+    <string name="boardText3">Giorno:</string>
+    <string name="boardTableText1">Nome</string>
+    <string name="boardTableText2">Ripetizioni</string>
+    <string name="boardButton1">Modifica scheda</string>
+    <string name="boardButton2">Elimina scheda</string>
+    <string name="boardButton3">Avvia allenamento</string>
+    <string-array name="dow">
+        <item>Lunedì</item>
+        <item>Martedì</item>
+        <item>Mercoledì</item>
+        <item>Giovedì</item>
+        <item>Venerdì</item>
+        <item>Sabato</item>
+        <item>Domenica</item>
+    </string-array>
+    <string name="boardText4">Recupero per ogni esercizio:</string>
+    <string name="boardText5">Recupero per ogni serie:</string>
+    <string name="boardExerciseListText1">Crea nuovo</string>
+    <string name="boardExerciseListText2">Annulla</string>
+    <string name="boardExerciseListText3">Aggiungi</string>
+    <string name="boardErrorText1">Impossibile caricare gli esercizi</string>
+
+    <string name="boardViewButton1">Seleziona</string>
+    <string name="boardViewButton2">Aggiungi esercizi</string>
+    <string name="boardViewButton3">Salva scheda</string>
+
+    <string name="exCreatorText1">Nome esercizio</string>
+    <string name="exCreatorText2">Puoi utilizzare solo i numeri da 0 a 9 e il carattere \'.\' per separare le ripetizioni</string>
+    <string name="exCreatorRadio1">Ripetizioni</string>
+    <string name="exCreatorRadio2">A tempo</string>
+    <string name="exCreatorText3">Set:</string>
+    <string name="exCreatorText4">x</string>
+    <string name="exCreatorButton1">Salva esercizio</string>
+
+    <string name="exListText1">Clicca + per aggiungere un esercizio</string>
+    <string name="exListText2">Crea un nuovo esercizio</string>
+
+    <string name="trainingText1">Serie eseguite:</string>
+    <string name="trainingText2">Esercizio corrente:</string>
+    <string name="trainingText3">Recupero</string>
+    <string name="trainingText4">Tempo rimasto</string>
+    <string name="trainingText5">Termina allenamento</string>
+    <string name="trainingText6">Avvia recupero</string>
+    <string name="trainingText7">Avvia serie</string>
+    <string name="trainingText8">Hai completato l\'allenamento!</string>
+</resources>
