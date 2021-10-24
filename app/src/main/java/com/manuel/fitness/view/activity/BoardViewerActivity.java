@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.manuel.fitness.R;
 import com.manuel.fitness.model.Converters;
-import com.manuel.fitness.view.adapter.ExerciseListAdapter;
-import com.manuel.fitness.viewmodel.controller.BoardViewerController;
 import com.manuel.fitness.model.entity.Esercizio;
 import com.manuel.fitness.model.entity.Giornata;
 import com.manuel.fitness.model.entity.Scheda;
+import com.manuel.fitness.view.adapter.ExerciseListAdapter;
+import com.manuel.fitness.viewmodel.controller.BoardViewerController;
 
 import java.time.LocalTime;
 import java.util.Comparator;
@@ -79,7 +79,6 @@ public class BoardViewerActivity extends ListActivity<Esercizio, ExerciseListAda
         }
         dow.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, days));
-        System.out.println("fatto2");
     }
 
     public void modificaScheda(View v) {
@@ -103,6 +102,9 @@ public class BoardViewerActivity extends ListActivity<Esercizio, ExerciseListAda
 
     @Override
     protected void createItem() {}
+
+    @Override
+    protected void onMoveItem(int fromPos, int toPos) {}
 
     @Override
     protected void onDeleteItem(Esercizio esercizio) {}

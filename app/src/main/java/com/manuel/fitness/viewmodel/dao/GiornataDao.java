@@ -23,7 +23,7 @@ public interface GiornataDao {
     Giornata readByDow(String dow);
 
     @Transaction
-    @Query("SELECT * FROM giornate WHERE id=:id")
+    @Query("SELECT * FROM giornate WHERE giornate.id=:id")
     GiornateEsercizi readWithEsercizi(long id);
 
     @Transaction

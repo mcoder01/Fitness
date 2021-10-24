@@ -155,6 +155,9 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
     protected void createItem() {}
 
     @Override
+    protected void onMoveItem(int fromPos, int toPos) {}
+
+    @Override
     protected void onDeleteItem(Esercizio esercizio) {}
 
     @Override

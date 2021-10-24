@@ -65,6 +65,9 @@ public class BoardListActivity extends ListActivity<Scheda, BoardListAdapter.Boa
     }
 
     @Override
+    protected void onMoveItem(int fromPos, int toPos) {}
+
+    @Override
     protected void onDeleteItem(Scheda scheda) {
         controller.deleteScheda(scheda);
     }

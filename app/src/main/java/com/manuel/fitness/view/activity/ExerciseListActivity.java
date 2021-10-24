@@ -27,9 +27,8 @@ public class ExerciseListActivity extends ListActivity<Esercizio, ExerciseListAd
         list = findViewById(R.id.exList);
         list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ExerciseListAdapter(this, new LinkedList<>(),
-                R.layout.exercise_list_row, true, true);
+                R.layout.exercise_list_row, true, false);
         list.setAdapter(adapter);
-        addItemSorter();
 
         addExerciseText = findViewById(R.id.addExerciseText);
 
@@ -57,6 +56,9 @@ public class ExerciseListActivity extends ListActivity<Esercizio, ExerciseListAd
     protected void createItem() {
         openActivity(ExerciseCreatorActivity.class, null);
     }
+
+    @Override
+    protected void onMoveItem(int fromPos, int toPos) {}
 
     @Override
     protected void onDeleteItem(Esercizio esercizio) {

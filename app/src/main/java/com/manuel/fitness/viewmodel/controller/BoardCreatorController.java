@@ -17,8 +17,10 @@ public class BoardCreatorController extends GenericController {
             for (Giornata g : scheda.getGiornate()) {
                 g.setIdScheda(scheda.getId());
                 g.setId(giornataDao.save(g));
-                for (Esercizio e : g.getEsercizi()) {
+                for (int i = 0; i < g.getEsercizi().size(); i++) {
+                    Esercizio e = g.getEsercizi().get(i);
                     Sessione s = new Sessione(g.getId(), e.getId());
+                    s.setOrdinal(i);
                     sessioneDao.save(s);
                 }
             }
@@ -32,10 +34,13 @@ public class BoardCreatorController extends GenericController {
                 g.setIdScheda(scheda.getId());
                 if (giornataDao.readByDow(g.getDow().toString()) == null)
                     g.setId(giornataDao.save(g));
-                for (Esercizio e : g.getEsercizi()) {
+                for (int i = 0; i < g.getEsercizi().size(); i++) {
+                    Esercizio e = g.getEsercizi().get(i);
                     Sessione s = new Sessione(g.getId(), e.getId());
+                    s.setOrdinal(i);
                     if (sessioneDao.read(s) == null)
                         sessioneDao.save(s);
+                    else sessioneDao.update(s);
                 }
             }
         });
@@ -46,9 +51,7 @@ public class BoardCreatorController extends GenericController {
         runOnNewThread(() -> {
             List<SetEsercizio> lista = esercizioDao.readAllWithSet();
             for (SetEsercizio se : lista) {
-                Set set = null;
-                if (se.getRs() != null) set = se.getRs();
-                else set = se.getTs();
+                Set set = (se.getRs() != null) ? se.getRs() : se.getTs();
                 se.getEsercizio().setSet(set);
                 esercizi.add(se.getEsercizio());
             }

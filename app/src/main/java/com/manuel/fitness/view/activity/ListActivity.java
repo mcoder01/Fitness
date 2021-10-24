@@ -73,6 +73,7 @@ public abstract class ListActivity<T extends Entity, V extends GenericListAdapte
     }
 
     protected abstract void createItem();
+    protected abstract void onMoveItem(int fromPos, int toPos);
     protected abstract void onDeleteItem(T t);
     protected abstract void onDeleteFinished();
 
@@ -87,6 +88,7 @@ public abstract class ListActivity<T extends Entity, V extends GenericListAdapte
                 int fromPos = viewHolder.getAdapterPosition();
                 int toPos = target.getAdapterPosition();
                 adapter.moveItem(fromPos, toPos);
+                onMoveItem(fromPos, toPos);
                 return true;
             }
 

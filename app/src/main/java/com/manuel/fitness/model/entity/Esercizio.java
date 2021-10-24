@@ -6,10 +6,6 @@ import com.manuel.fitness.model.entity.set.Set;
 
 @androidx.room.Entity(tableName = "esercizi")
 public class Esercizio extends Entity {
-    @Ignore
-    private static int lastValue = 0;
-
-    private int ordinal;
     private String nome;
     @Ignore
     private Set set;
@@ -22,17 +18,6 @@ public class Esercizio extends Entity {
 
     public Esercizio(String nome) {
         this.nome = nome;
-        ordinal = lastValue++;
-    }
-
-    public int getOrdinal() {
-        return ordinal;
-    }
-
-    public void setOrdinal(int ordinal) {
-        this.ordinal = ordinal;
-        if (ordinal > lastValue)
-            lastValue = ordinal+1;
     }
 
     public String getNome() {

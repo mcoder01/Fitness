@@ -1,8 +1,6 @@
 package com.manuel.fitness.view.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -10,14 +8,13 @@ import android.widget.CheckBox;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.LinkedList;
-import java.util.function.Consumer;
-
 import com.manuel.fitness.R;
 import com.manuel.fitness.model.entity.Entity;
-import com.manuel.fitness.view.ClickableImageView;
 import com.manuel.fitness.view.activity.ListActivity;
 import com.manuel.fitness.view.adapter.GenericListAdapter.ViewHolder;
+
+import java.util.LinkedList;
+import java.util.function.Consumer;
 
 public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder> extends RecyclerView.Adapter<V> {
     protected final ListActivity<T, V> activity;

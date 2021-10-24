@@ -18,6 +18,7 @@ import androidx.room.ForeignKey;
 public class Sessione {
     private long idGiornata;
     private long idEsercizio;
+    private int ordinal;
 
     public Sessione(long idGiornata, long idEsercizio) {
         this.idGiornata = idGiornata;
@@ -38,5 +39,13 @@ public class Sessione {
 
     public void setIdEsercizio(long idEsercizio) {
         this.idEsercizio = idEsercizio;
+    }
+
+    public int getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
     }
 }

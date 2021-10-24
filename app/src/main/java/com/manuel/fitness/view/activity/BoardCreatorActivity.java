@@ -4,16 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import com.manuel.fitness.R;
-import com.manuel.fitness.viewmodel.controller.BoardCreatorController;
-import com.manuel.fitness.viewmodel.event.DateSelector;
-import com.manuel.fitness.view.adapter.ExerciseListAdapter;
-import com.manuel.fitness.view.TimePicker;
-import com.manuel.fitness.model.entity.Esercizio;
-import com.manuel.fitness.model.entity.Giornata;
-import com.manuel.fitness.model.entity.Scheda;
-
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +11,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.manuel.fitness.R;
+import com.manuel.fitness.model.entity.Esercizio;
+import com.manuel.fitness.model.entity.Giornata;
+import com.manuel.fitness.model.entity.Scheda;
+import com.manuel.fitness.view.TimePicker;
+import com.manuel.fitness.view.adapter.ExerciseListAdapter;
+import com.manuel.fitness.viewmodel.controller.BoardCreatorController;
+import com.manuel.fitness.viewmodel.event.DateSelector;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -176,6 +175,9 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
 
     @Override
     protected void createItem() {}
+
+    @Override
+    protected void onMoveItem(int fromPos, int toPos) {}
 
     @Override
     protected void onDeleteItem(Esercizio esercizio) {
