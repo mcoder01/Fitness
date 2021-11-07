@@ -10,7 +10,7 @@ import java.util.List;
 public class BoardListController extends BoardViewerController {
     public LinkedList<Scheda> loadSchede() {
         LinkedList<Scheda> schede = new LinkedList<>();
-        runOnNewThread(() -> {
+        runOnNewThreadAndWait(() -> {
             List<SchedaGiornate> list = schedaDao.readAllWithGiornate();
             for (SchedaGiornate sg : list) {
                 LinkedList<Giornata> giornate = new LinkedList<>(sg.getGiornate());

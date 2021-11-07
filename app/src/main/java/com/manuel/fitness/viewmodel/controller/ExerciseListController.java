@@ -10,7 +10,7 @@ import java.util.List;
 public class ExerciseListController extends GenericController {
     public LinkedList<Esercizio> readEsercizi() {
         LinkedList<Esercizio> esercizi = new LinkedList<>();
-        runOnNewThread(() -> {
+        runOnNewThreadAndWait(() -> {
             List<SetEsercizio> list = esercizioDao.readAllWithSet();
             for (SetEsercizio se : list) {
                 se.getEsercizio().setSet(se.getSet());

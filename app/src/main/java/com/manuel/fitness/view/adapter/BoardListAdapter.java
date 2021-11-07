@@ -28,7 +28,7 @@ public class BoardListAdapter extends GenericListAdapter<Scheda, BoardListAdapte
     }
 
     @Override
-    protected BoardViewHolder getViewHolder(View v) {
+    public BoardViewHolder getViewHolder(View v) {
         return new BoardViewHolder(v);
     }
 

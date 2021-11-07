@@ -87,7 +87,7 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
         exRecovery = findViewById(R.id.exRecovery);
         setRecovery = findViewById(R.id.setRecovery);
 
-        scheda = (Scheda) getIntent().getExtras().get("scheda");
+        scheda = (Scheda) getIntent().getExtras().get(Scheda.class.toString());
         if (scheda != null) {
             startDate.setDate(scheda.getDataInzio());
             endDate.setDate(scheda.getDataFine());
@@ -125,9 +125,7 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
             controller.updateScheda(scheda);
         else controller.saveScheda(scheda);
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("scheda", scheda);
-        openActivity(BoardViewerActivity.class, bundle);
+        openActivity(BoardViewerActivity.class, scheda);
         finish();
     }
 
@@ -154,7 +152,7 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
                 (dialog, which, isChecked) -> checked[which] = isChecked);
 
         builder.setNeutralButton(R.string.boardExerciseListText1, (dialog, which) -> {
-            openActivity(ExerciseCreatorActivity.class, null);
+            openActivity(ExerciseCreatorActivity.class);
             openSelector = false;
         });
 
@@ -172,9 +170,6 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
         AlertDialog alert = builder.create();
         alert.show();
     }
-
-    @Override
-    protected void createItem() {}
 
     @Override
     protected void onMoveItem(int fromPos, int toPos) {}

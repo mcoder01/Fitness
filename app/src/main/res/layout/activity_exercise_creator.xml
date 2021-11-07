@@ -59,15 +59,15 @@
                 android:layout_marginEnd="80dp"
                 android:checked="true"
                 android:gravity="start|center_vertical"
-                android:onClick="cambiaTipoSet"
+                android:onClick="changeSetType"
                 android:text="@string/exCreatorRadio1"
                 android:textSize="16sp" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/timeRadio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="cambiaTipoSet"
+                android:onClick="changeSetType"
                 android:text="@string/exCreatorRadio2"
                 android:textSize="16sp" />
 
@@ -137,10 +137,10 @@
                 android:ems="2"
                 android:gravity="center"
                 android:inputType="number"
+                android:text="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView8"

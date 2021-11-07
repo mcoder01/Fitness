@@ -10,12 +10,12 @@ import android.widget.RadioGroup;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.manuel.fitness.R;
+import com.manuel.fitness.model.entity.Esercizio;
 import com.manuel.fitness.model.entity.set.RepetitionSet;
 import com.manuel.fitness.model.entity.set.Set;
 import com.manuel.fitness.model.entity.set.TimeSet;
 import com.manuel.fitness.view.TimePicker;
 import com.manuel.fitness.viewmodel.controller.ExerciseCreatorController;
-import com.manuel.fitness.model.entity.Esercizio;
 
 import java.time.LocalTime;
 
@@ -26,6 +26,7 @@ public class ExerciseCreatorActivity extends GenericActivity {
     private ConstraintLayout setLayout, ripLayout, timeLayout;
 
     private ExerciseCreatorController controller;
+    private Esercizio exercise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,22 @@ public class ExerciseCreatorActivity extends GenericActivity {
         rip = findViewById(R.id.ripetizioni);
         timeLayout = findViewById(R.id.timeLayout);
         time = findViewById(R.id.time);
+
+        exercise = (Esercizio) getIntent().getExtras().get(Esercizio.class.toString());
+        if (exercise != null) {
+            nome.setText(exercise.getNome());
+            if (exercise.getSet() instanceof RepetitionSet) {
+                setType.check(R.id.ripRadio);
+                changeSetType(findViewById(R.id.ripRadio));
+                rip.setText(exercise.getSet().toString());
+            } else {
+                TimeSet timeSet = (TimeSet) exercise.getSet();
+                setType.check(R.id.timeRadio);
+                changeSetType(findViewById(R.id.timeRadio));
+                serie.setText(String.valueOf(timeSet.getSerie()));
+                time.setTime(timeSet.getTempo());
+            }
+        }
 
         serie.addTextChangedListener(new TextWatcher() {
             boolean active = true;
@@ -75,7 +92,7 @@ public class ExerciseCreatorActivity extends GenericActivity {
         controller = new ExerciseCreatorController();
     }
 
-    public void cambiaTipoSet(View v) {
+    public void changeSetType(View v) {
         if (v.getId() == R.id.ripRadio) {
             ripLayout.setVisibility(View.VISIBLE);
             timeLayout.setVisibility(View.INVISIBLE);
@@ -136,8 +153,14 @@ public class ExerciseCreatorActivity extends GenericActivity {
             set = new TimeSet(s, t);
         }
 
-        Esercizio e = new Esercizio(name, set);
-        controller.saveEsercizio(e);
+        if (exercise != null) {
+            controller.deleteSet(exercise.getSet());
+            exercise.setSet(set);
+            controller.updateEsercizio(exercise);
+        } else {
+            exercise = new Esercizio(name, set);
+            controller.saveEsercizio(exercise);
+        }
 
         finish();
     }

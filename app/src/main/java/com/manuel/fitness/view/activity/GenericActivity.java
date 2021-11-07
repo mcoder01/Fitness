@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.manuel.fitness.R;
 import com.manuel.fitness.model.FitnessDatabase;
 
+import java.io.Serializable;
+
 public abstract class GenericActivity extends AppCompatActivity {
     protected static FitnessDatabase database;
 
@@ -41,10 +43,6 @@ public abstract class GenericActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public <T> void openActivity(Class<T> type, Bundle extras) {
-        openActivity(type, extras, -1);
-    }
-
     public <T> void openActivity(Class<T> type, Bundle extras, int flags) {
         Intent intent = new Intent(this, type);
         if (extras == null) extras = new Bundle();
@@ -52,6 +50,20 @@ public abstract class GenericActivity extends AppCompatActivity {
         if (flags != -1)
             intent.setFlags(flags);
         startActivity(intent);
+    }
+
+    public <T> void openActivity(Class<T> type, Serializable... items) {
+        Bundle extra = new Bundle();
+        if (items != null)
+            for (Serializable item : items) {
+                System.out.println("Item key: " + item.getClass().toString());
+                extra.putSerializable(item.getClass().toString(), item);
+            }
+        openActivity(type, extra, -1);
+    }
+
+    public <T> void openActivity(Class<T> type) {
+        openActivity(type, null, -1);
     }
 
     public void showToast(String msg) {

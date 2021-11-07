@@ -14,26 +14,26 @@ import java.util.List;
 
 @Dao
 public interface SchedaDao {
-    @Insert
-    public long save(Scheda scheda);
+	@Insert
+	long save(Scheda scheda);
 
-    @Query("SELECT * FROM schede WHERE id=:id")
-    public Scheda read(long id);
+	@Query("SELECT * FROM schede WHERE id=:id")
+	Scheda read(long id);
 
-    @Transaction
-    @Query("SELECT * FROM schede WHERE id=:id")
-    public SchedaGiornate readWithGiornate(long id);
+	@Transaction
+	@Query("SELECT * FROM schede WHERE id=:id")
+	SchedaGiornate readWithGiornate(long id);
 
-    @Query("SELECT * FROM schede")
-    public List<Scheda> readAll();
+	@Query("SELECT * FROM schede")
+	List<Scheda> readAll();
 
-    @Transaction
-    @Query("SELECT * FROM schede")
-    public List<SchedaGiornate> readAllWithGiornate();
+	@Transaction
+	@Query("SELECT * FROM schede")
+	List<SchedaGiornate> readAllWithGiornate();
 
-    @Update
-    public void update(Scheda scheda);
+	@Update
+	void update(Scheda scheda);
 
-    @Delete
-    public void delete(Scheda scheda);
+	@Delete
+	void delete(Scheda scheda);
 }

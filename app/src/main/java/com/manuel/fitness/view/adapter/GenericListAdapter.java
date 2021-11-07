@@ -14,15 +14,12 @@ import com.manuel.fitness.view.activity.ListActivity;
 import com.manuel.fitness.view.adapter.GenericListAdapter.ViewHolder;
 
 import java.util.LinkedList;
-import java.util.function.Consumer;
 
 public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder> extends RecyclerView.Adapter<V> {
     protected final ListActivity<T, V> activity;
     protected LinkedList<T> list;
     private final int resId;
 
-    private View.OnClickListener onClick;
-    private Consumer<Boolean> onRowSelectionChange;
     private final LinkedList<T> selectedItems;
     private final boolean selectable;
 
@@ -40,7 +37,6 @@ public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder>
     public V onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(activity);
         View v = inflater.inflate(resId, parent, false);
-        v.setOnClickListener(onClick);
         return getViewHolder(v);
     }
 
@@ -49,13 +45,12 @@ public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder>
         if (selectable) {
             T t = list.get(holder.getAdapterPosition());
             holder.getSelector().setOnCheckedChangeListener(null);
-            holder.getSelector().setChecked(selectedItems.contains(t));
+            holder.getSelector().setChecked(false);
             holder.getSelector().setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) selectedItems.add(t);
                 else selectedItems.remove(t);
-                onRowSelectionChange.accept(isChecked);
             });
-        } else holder.getSelector().setVisibility(View.GONE);
+        }
     }
 
     public void moveItem(int fromPos, int toPos) {
@@ -79,14 +74,6 @@ public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder>
     public void setList(LinkedList<T> list) {
         this.list = list;
         notifyDataSetChanged();
-    }
-
-    public void setOnClick(View.OnClickListener onClick) {
-        this.onClick = onClick;
-    }
-
-    public void setOnRowSelectionChange(Consumer<Boolean> onRowSelectionChange) {
-        this.onRowSelectionChange = onRowSelectionChange;
     }
 
     public LinkedList<T> getSelectedItems() {

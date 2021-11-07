@@ -5,8 +5,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.manuel.fitness.R;
 import com.manuel.fitness.model.entity.Scheda;
 import com.manuel.fitness.view.adapter.BoardListAdapter;
@@ -23,14 +21,11 @@ public class BoardListActivity extends ListActivity<Scheda, BoardListAdapter.Boa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_list);
+        createList(R.id.list, new BoardListAdapter(this, new LinkedList<>(),
+                R.layout.board_list_row, true), BoardCreatorActivity.class,
+                BoardViewerActivity.class);
 
         controller = new BoardListController();
-
-        adapter = new BoardListAdapter(this, new LinkedList<>(),
-                R.layout.board_list_row, true);
-        list = findViewById(R.id.list);
-        list.setLayoutManager(new LinearLayoutManager(this));
-        list.setAdapter(adapter);
     }
 
     @Override
@@ -38,13 +33,6 @@ public class BoardListActivity extends ListActivity<Scheda, BoardListAdapter.Boa
         super.onResume();
         LinkedList<Scheda> schede = controller.loadSchede();
         updateList(schede);
-
-        adapter.setOnClick(v -> {
-            int position = list.getChildAdapterPosition(v);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("scheda", schede.get(position));
-            openActivity(BoardViewerActivity.class, bundle);
-        });
 
         if (schede.size() > 0) {
             addBoardText = findViewById(R.id.addBoardText);
@@ -57,11 +45,6 @@ public class BoardListActivity extends ListActivity<Scheda, BoardListAdapter.Boa
         boolean result = super.onCreateOptionsMenu(menu);
         menu.findItem(R.id.menu_schede).setEnabled(false);
         return result;
-    }
-
-    @Override
-    protected void createItem() {
-        openActivity(BoardCreatorActivity.class, null);
     }
 
     @Override

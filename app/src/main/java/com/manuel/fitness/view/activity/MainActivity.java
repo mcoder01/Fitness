@@ -2,11 +2,8 @@ package com.manuel.fitness.view.activity;
 
 import android.os.Bundle;
 
-import android.view.View;
-
-import com.manuel.fitness.R;
-import com.manuel.fitness.viewmodel.controller.MainController;
 import com.manuel.fitness.model.entity.Scheda;
+import com.manuel.fitness.viewmodel.controller.MainController;
 
 public class MainActivity extends GenericActivity {
     @Override
@@ -16,12 +13,8 @@ public class MainActivity extends GenericActivity {
         MainController controller = new MainController();
         Scheda scheda = controller.getLastScheda();
         if (scheda == null)
-            openActivity(BoardListActivity.class, null);
-        else {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("scheda", scheda);
-            openActivity(BoardViewerActivity.class, bundle);
-        }
+            openActivity(BoardListActivity.class);
+        else openActivity(BoardViewerActivity.class, scheda);
 
         finish();
     }
