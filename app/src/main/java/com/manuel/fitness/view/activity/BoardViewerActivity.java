@@ -87,14 +87,11 @@ public class BoardViewerActivity extends ListActivity<Esercizio, ExerciseListAda
 
 	public void eliminaScheda(View v) {
 		controller.deleteScheda(scheda);
-		openActivity(BoardListActivity.class);
 		finish();
 	}
 
 	public void avvia(View v) {
-		System.out.println("Avvio l'allenamento...");
 		openActivity(TrainingActivity.class, scheda, giornata);
-		System.out.println("Fatto!");
 	}
 
 	@Override

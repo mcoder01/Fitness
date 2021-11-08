@@ -33,8 +33,8 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_training);
 
-		scheda = (Scheda) getIntent().getExtras().get("scheda");
-		giornata = (Giornata) getIntent().getExtras().get("giornata");
+		scheda = (Scheda) getIntent().getExtras().get(Scheda.class.toString());
+		giornata = (Giornata) getIntent().getExtras().get(Giornata.class.toString());
 		esercizio = giornata.getEsercizi().get(0);
 		list = findViewById(R.id.exList);
 		list.setLayoutManager(new LinearLayoutManager(this));
