@@ -2,8 +2,6 @@ package com.manuel.fitness.model;
 
 import androidx.room.TypeConverter;
 
-import com.manuel.fitness.model.entity.set.RepetitionSet;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,12 +11,16 @@ import java.time.format.FormatStyle;
 public class Converters {
     @TypeConverter
     public static String dateToString(LocalDate date) {
-        return date.toString();
+        if (date != null)
+            return date.toString();
+        return "null";
     }
 
     @TypeConverter
     public static LocalDate dateFromString(String s) {
-        return LocalDate.parse(s);
+        if (!s.equals("null"))
+            return LocalDate.parse(s);
+        return null;
     }
 
     @TypeConverter
@@ -72,7 +74,9 @@ public class Converters {
     }
 
     public static String dateToText(LocalDate date) {
-        return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
+        if (date != null)
+            return date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
+        return "";
     }
 
     @TypeConverter

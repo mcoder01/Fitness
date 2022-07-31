@@ -21,14 +21,14 @@ public interface SchedaDao {
 	Scheda read(long id);
 
 	@Transaction
-	@Query("SELECT * FROM schede WHERE id=:id")
+	@Query("SELECT * FROM schede s JOIN giornate g ON g.idScheda=s.id WHERE s.id=:id")
 	SchedaGiornate readWithGiornate(long id);
 
 	@Query("SELECT * FROM schede")
 	List<Scheda> readAll();
 
 	@Transaction
-	@Query("SELECT * FROM schede")
+	@Query("SELECT * FROM schede s JOIN giornate g ON s.id=g.id")
 	List<SchedaGiornate> readAllWithGiornate();
 
 	@Update

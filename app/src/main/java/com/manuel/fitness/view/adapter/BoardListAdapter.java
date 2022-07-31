@@ -15,15 +15,19 @@ import java.util.LinkedList;
 public class BoardListAdapter extends GenericListAdapter<Scheda, BoardListAdapter.BoardViewHolder> {
     public BoardListAdapter(ListActivity<Scheda, BoardViewHolder> activity,
                             LinkedList<Scheda> schede, int resId, boolean selectable) {
-        super(activity, schede, resId, selectable);
+        super(activity, schede, resId, selectable, false);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BoardViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         Scheda scheda = list.get(position);
-        holder.getDataInizio().setText(Converters.dateToText(scheda.getDataInzio()));
-        holder.getDataFine().setText(Converters.dateToText(scheda.getDataFine()));
+        if (scheda.getDataInzio() != null)
+            holder.getDataInizio().setText(Converters.dateToText(scheda.getDataInzio()));
+        else holder.getDataInizio().setText("-");
+        if (scheda.getDataFine() != null)
+            holder.getDataFine().setText(Converters.dateToText(scheda.getDataFine()));
+        else holder.getDataFine().setText("-");
         holder.getGiorni().setText(String.valueOf(scheda.getGiornate().size()));
     }
 

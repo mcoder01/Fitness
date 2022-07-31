@@ -10,9 +10,8 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.manuel.fitness.R;
+import com.manuel.fitness.model.Converters;
 import com.manuel.fitness.model.entity.Esercizio;
 import com.manuel.fitness.model.entity.Giornata;
 import com.manuel.fitness.model.entity.Scheda;
@@ -42,6 +41,8 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board_creator);
+        createList(R.id.exList, new ExerciseListAdapter(this, new LinkedList<>(),
+                R.layout.exercise_list_row, true, true), null, null);
 
         View.OnFocusChangeListener focusListener = (v, hasFocus) -> {
             if (openSelector) {
@@ -77,12 +78,6 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
         });
 
         controller = new BoardCreatorController();
-        list = findViewById(R.id.exList);
-        list.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ExerciseListAdapter(this, new LinkedList<>(),
-                R.layout.exercise_list_row, true, true);
-        list.setAdapter(adapter);
-        addItemSorter();
 
         exRecovery = findViewById(R.id.exRecovery);
         setRecovery = findViewById(R.id.setRecovery);
@@ -94,7 +89,16 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
             exRecovery.setTime(scheda.getRecuperoTraEsercizi());
             setRecovery.setTime(scheda.getRecuperoTraSerie());
             update = true;
-        } else scheda = new Scheda();
+        } else {
+            scheda = new Scheda();
+            LocalDate start = LocalDate.now();
+            LocalDate end = start.plusMonths(2);
+            startDate.setDate(start);
+            endDate.setDate(end);
+            startDatePicker.setText(Converters.dateToText(start));
+            endDatePicker.setText(Converters.dateToText(end));
+            update = false;
+        }
     }
 
     @Override
@@ -111,6 +115,12 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
     }
 
     public void save(View v) {
+        scheda.getGiornate().removeIf(g -> g.getEsercizi().size() == 0);
+        if (scheda.getGiornate().isEmpty()) {
+            showToast("Devi includere almeno un esercizio nella scheda!");
+            return;
+        }
+
         LocalDate start = startDate.getDate();
         scheda.setDataInzio(start);
         LocalDate end = endDate.getDate();
@@ -119,13 +129,13 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
         scheda.setRecuperoTraEsercizi(exRec);
         LocalTime setRec = setRecovery.getTime();
         scheda.setRecuperoTraSerie(setRec);
-        scheda.getGiornate().removeIf(g -> g.getEsercizi().size() == 0);
 
-        if (update)
-            controller.updateScheda(scheda);
-        else controller.saveScheda(scheda);
+        if (update) controller.updateScheda(scheda);
+        else {
+            controller.saveScheda(scheda);
+            openActivity(BoardViewerActivity.class, scheda);
+        }
 
-        openActivity(BoardViewerActivity.class, scheda);
         finish();
     }
 
@@ -162,8 +172,10 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
 
         builder.setPositiveButton(R.string.boardExerciseListText3, (dialog, which) -> {
             for (int i = 0; i < items.length; i++)
-                if (checked[i])
-                    addExerciseToList(esercizi.get(i));
+                if (checked[i]) {
+                    Esercizio e = esercizi.get(i);
+                    addElementToList(e);
+                }
             dialog.dismiss();
         });
 

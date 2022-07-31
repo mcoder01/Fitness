@@ -37,6 +37,7 @@ public class ExerciseListActivity extends ListActivity<Esercizio, ExerciseListAd
 
 		if (esercizi.size() > 0)
 			addExerciseText.setVisibility(View.INVISIBLE);
+		else addExerciseText.setVisibility(View.VISIBLE);
 	}
 
 	@Override

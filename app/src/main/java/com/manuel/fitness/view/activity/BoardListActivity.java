@@ -25,6 +25,8 @@ public class BoardListActivity extends ListActivity<Scheda, BoardListAdapter.Boa
                 R.layout.board_list_row, true), BoardCreatorActivity.class,
                 BoardViewerActivity.class);
 
+        addBoardText = findViewById(R.id.addBoardText);
+
         controller = new BoardListController();
     }
 
@@ -34,10 +36,9 @@ public class BoardListActivity extends ListActivity<Scheda, BoardListAdapter.Boa
         LinkedList<Scheda> schede = controller.loadSchede();
         updateList(schede);
 
-        if (schede.size() > 0) {
-            addBoardText = findViewById(R.id.addBoardText);
+        if (schede.size() > 0)
             addBoardText.setVisibility(View.INVISIBLE);
-        }
+        else addBoardText.setVisibility(View.VISIBLE);
     }
 
     @Override

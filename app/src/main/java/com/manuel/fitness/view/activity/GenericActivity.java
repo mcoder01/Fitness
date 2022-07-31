@@ -55,10 +55,8 @@ public abstract class GenericActivity extends AppCompatActivity {
     public <T> void openActivity(Class<T> type, Serializable... items) {
         Bundle extra = new Bundle();
         if (items != null)
-            for (Serializable item : items) {
-                System.out.println("Item key: " + item.getClass().toString());
+            for (Serializable item : items)
                 extra.putSerializable(item.getClass().toString(), item);
-            }
         openActivity(type, extra, -1);
     }
 

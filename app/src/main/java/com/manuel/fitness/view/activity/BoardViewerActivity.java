@@ -46,8 +46,12 @@ public class BoardViewerActivity extends ListActivity<Esercizio, ExerciseListAda
 		TextView setRec = findViewById(R.id.setRecText);
 
 		scheda = (Scheda) getIntent().getExtras().get(Scheda.class.toString());
-		startDate.setText(Converters.dateToText(scheda.getDataInzio()));
-		endDate.setText(Converters.dateToText(scheda.getDataFine()));
+		if (scheda.getDataInzio() != null)
+			startDate.setText(Converters.dateToText(scheda.getDataInzio()));
+		else startDate.setText("-");
+		if (scheda.getDataFine() != null)
+			endDate.setText(Converters.dateToText(scheda.getDataFine()));
+		else endDate.setText("-");
 		LocalTime exRecTime = scheda.getRecuperoTraEsercizi();
 		exRec.setText(Converters.timeToText(exRecTime));
 		LocalTime setRecTime = scheda.getRecuperoTraSerie();

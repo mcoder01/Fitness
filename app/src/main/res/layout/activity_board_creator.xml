@@ -29,7 +29,8 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintTop_toTopOf="@+id/textView"
+        android:autofillHints="date" />
 
     <TextView
         android:id="@+id/textView4"
@@ -54,7 +55,8 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toTopOf="@+id/textView4" />
+        app:layout_constraintTop_toTopOf="@+id/textView4"
+        android:autofillHints="date" />
 
     <TextView
         android:id="@+id/textView6"

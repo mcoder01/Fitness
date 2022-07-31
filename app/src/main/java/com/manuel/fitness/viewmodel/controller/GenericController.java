@@ -34,6 +34,10 @@ public abstract class GenericController {
 
     public void runOnNewThreadAndWait(Runnable runnable) {
         runOnNewThread(runnable);
-        while(thread.isAlive());
+        try {
+            thread.join();
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -23,7 +23,7 @@ public class ExerciseCreatorActivity extends GenericActivity {
     private EditText nome, serie, rip;
     private TimePicker time;
     private RadioGroup setType;
-    private ConstraintLayout setLayout, ripLayout, timeLayout;
+    private ConstraintLayout ripLayout, timeLayout;
 
     private ExerciseCreatorController controller;
     private Esercizio exercise;
@@ -35,7 +35,6 @@ public class ExerciseCreatorActivity extends GenericActivity {
 
         nome = findViewById(R.id.exName);
         serie = findViewById(R.id.serie);
-        setLayout = findViewById(R.id.setLayout);
         setType = findViewById(R.id.setType);
         ripLayout = findViewById(R.id.ripLayout);
         rip = findViewById(R.id.ripetizioni);
@@ -56,9 +55,9 @@ public class ExerciseCreatorActivity extends GenericActivity {
                 serie.setText(String.valueOf(timeSet.getSerie()));
                 time.setTime(timeSet.getTempo());
             }
-        }
+        } else serie.setText("1");
 
-        serie.addTextChangedListener(new TextWatcher() {
+        rip.addTextChangedListener(new TextWatcher() {
             boolean active = true;
 
             @Override
@@ -71,17 +70,13 @@ public class ExerciseCreatorActivity extends GenericActivity {
                     int len = text.length();
                     if (!text.isEmpty() && text.charAt(len - 1) == '0') {
                         active = false;
-                        if (len == 1) serie.setText("");
+                        if (len == 1) rip.setText("");
                         else if (text.charAt(len - 2) == '.') {
-                            serie.setText(text.substring(0, len - 1));
-                            serie.setSelection(len - 1);
+                            rip.setText(text.substring(0, len - 1));
+                            rip.setSelection(len - 1);
                         }
                         active = true;
                     }
-
-                    if (text.contains(".") || text.isEmpty())
-                        setLayout.setVisibility(View.INVISIBLE);
-                    else setLayout.setVisibility(View.VISIBLE);
                 }
             }
 
