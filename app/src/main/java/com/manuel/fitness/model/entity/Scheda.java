@@ -10,6 +10,7 @@ import java.util.LinkedList;
 public class Scheda extends Entity {
     private LocalDate dataInzio, dataFine;
     private LocalTime recuperoTraEsercizi, recuperoTraSerie;
+    private boolean defaultBoard;
 
     @Ignore
     private LinkedList<Giornata> giornate;
@@ -58,6 +59,14 @@ public class Scheda extends Entity {
 
     public void setRecuperoTraSerie(LocalTime recuperoTraSerie) {
         this.recuperoTraSerie = recuperoTraSerie;
+    }
+
+    public boolean isDefaultBoard() {
+        return defaultBoard;
+    }
+
+    public void setDefaultBoard(boolean defaultBoard) {
+        this.defaultBoard = defaultBoard;
     }
 
     public LinkedList<Giornata> getGiornate() {

@@ -1,6 +1,9 @@
 package com.manuel.fitness.model.entity.set;
 
+import androidx.annotation.NonNull;
 import androidx.room.Ignore;
+
+import java.util.Arrays;
 
 @androidx.room.Entity(tableName = "repetition_set")
 public class RepetitionSet extends Set {
@@ -13,6 +16,7 @@ public class RepetitionSet extends Set {
             set[i] = ripetizioni;
     }
 
+	@NonNull
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
@@ -31,6 +35,14 @@ public class RepetitionSet extends Set {
             if (set[i] != set[i - 1])
                 return false;
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RepetitionSet that = (RepetitionSet) o;
+        return Arrays.equals(set, that.set);
     }
 
     public RepetitionSet(int[] set) {

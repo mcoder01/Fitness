@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BoardCreatorController extends GenericController {
     public void saveScheda(Scheda scheda) {
-        runOnNewThread(() -> {
+        runOnNewThreadAndWait(() -> {
             scheda.setId(schedaDao.save(scheda));
             for (Giornata g : scheda.getGiornate()) {
                 g.setIdScheda(scheda.getId());
@@ -28,7 +28,7 @@ public class BoardCreatorController extends GenericController {
     }
 
     public void updateScheda(Scheda scheda) {
-        runOnNewThread(() -> {
+        runOnNewThreadAndWait(() -> {
             schedaDao.update(scheda);
             for (Giornata g : scheda.getGiornate()) {
                 g.setIdScheda(scheda.getId());

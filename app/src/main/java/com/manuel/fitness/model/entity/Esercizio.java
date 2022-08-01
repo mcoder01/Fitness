@@ -16,6 +16,14 @@ public class Esercizio extends Entity {
         this.set = set;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Esercizio esercizio = (Esercizio) o;
+        return nome.equals(esercizio.nome) && set.equals(esercizio.set);
+    }
+
     public Esercizio(String nome) {
         this.nome = nome;
     }

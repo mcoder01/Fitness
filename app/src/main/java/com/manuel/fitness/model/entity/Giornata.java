@@ -25,8 +25,12 @@ public class Giornata extends Entity {
 
     @Override
     public boolean equals(Object o) {
-        Giornata g = (Giornata) o;
-        return dow.equals(g.getDow());
+        if (o instanceof Giornata) {
+            Giornata g = (Giornata) o;
+            return dow.equals(g.getDow());
+        }
+
+        return false;
     }
 
     public DayOfWeek getDow() {

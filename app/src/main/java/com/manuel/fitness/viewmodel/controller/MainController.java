@@ -2,15 +2,12 @@ package com.manuel.fitness.viewmodel.controller;
 
 import com.manuel.fitness.model.entity.Scheda;
 
-import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainController extends GenericController {
     public Scheda getLastScheda() {
-        LinkedList<Scheda> schede = new LinkedList<>();
-        runOnNewThread(() -> schede.addAll(schedaDao.readAll()));
-
-        if (schede.size() > 0)
-            return schede.getLast();
-        return null;
+        AtomicReference<Scheda> def = new AtomicReference<>();
+        runOnNewThreadAndWait(() -> def.set(schedaDao.readDefault()));
+        return def.get();
     }
 }

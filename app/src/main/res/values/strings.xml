@@ -34,7 +34,9 @@
     <string name="boardExerciseListText2">Annulla</string>
     <string name="boardExerciseListText3">Aggiungi</string>
     <string name="boardErrorText1">Impossibile caricare gli esercizi</string>
+    <string name="boardCreatorError1">La scheda deve contenere almeno un esercizio</string>
 
+    <string name="boardViewCheckbox">Scheda predefinita</string>
     <string name="boardViewButton1">Seleziona</string>
     <string name="boardViewButton2">Aggiungi esercizi</string>
     <string name="boardViewButton3">Salva scheda</string>

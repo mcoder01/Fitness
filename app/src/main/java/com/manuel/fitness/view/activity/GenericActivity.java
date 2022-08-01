@@ -2,6 +2,11 @@ package com.manuel.fitness.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AlignmentSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -65,6 +70,9 @@ public abstract class GenericActivity extends AppCompatActivity {
     }
 
     public void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        Spannable text = new SpannableString(msg);
+        text.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0,
+                text.length()-1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }

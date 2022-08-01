@@ -1,5 +1,6 @@
 package com.manuel.fitness.model.entity.set;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
 import com.manuel.fitness.model.Converters;
@@ -16,9 +17,18 @@ public class TimeSet extends Set {
         setTempo(tempo);
     }
 
-    @Override
+	@NonNull
+	@Override
     public String toString() {
         return serie + "x" + Converters.timeToText(tempo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeSet timeSet = (TimeSet) o;
+        return serie == timeSet.serie && tempo.equals(timeSet.tempo);
     }
 
     @Override

@@ -2,10 +2,10 @@ package com.manuel.fitness.view.activity;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -117,7 +117,7 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
     public void save(View v) {
         scheda.getGiornate().removeIf(g -> g.getEsercizi().size() == 0);
         if (scheda.getGiornate().isEmpty()) {
-            showToast("Devi includere almeno un esercizio nella scheda!");
+            showToast(getString(R.string.boardCreatorError1));
             return;
         }
 
@@ -156,8 +156,7 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
             checked[i] = false;
         }
 
-        final Context ctx = this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMultiChoiceItems(items, checked,
                 (dialog, which, isChecked) -> checked[which] = isChecked);
 
@@ -180,7 +179,21 @@ public class BoardCreatorActivity extends ListActivity<Esercizio, ExerciseListAd
         });
 
         AlertDialog alert = builder.create();
-        alert.show();
+		alert.getListView().setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+			@Override
+			public void onChildViewAdded(View parent, View child) {
+				int pos = alert.getListView().indexOfChild(child);
+				Esercizio e1 = esercizi.get(pos);
+				for (Esercizio e2 : giornata.getEsercizi())
+					if (e1.equals(e2))
+						child.setEnabled(false);
+			}
+
+			@Override
+			public void onChildViewRemoved(View parent, View child) {}
+		});
+
+		alert.show();
     }
 
     @Override

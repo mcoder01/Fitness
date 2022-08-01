@@ -20,15 +20,18 @@ public interface SchedaDao {
 	@Query("SELECT * FROM schede WHERE id=:id")
 	Scheda read(long id);
 
+	@Query("SELECT * FROM schede WHERE defaultBoard='true'")
+	Scheda readDefault();
+
 	@Transaction
-	@Query("SELECT * FROM schede s JOIN giornate g ON g.idScheda=s.id WHERE s.id=:id")
+	@Query("SELECT * FROM schede s WHERE s.id=:id")
 	SchedaGiornate readWithGiornate(long id);
 
 	@Query("SELECT * FROM schede")
 	List<Scheda> readAll();
 
 	@Transaction
-	@Query("SELECT * FROM schede s JOIN giornate g ON s.id=g.id")
+	@Query("SELECT * FROM schede")
 	List<SchedaGiornate> readAllWithGiornate();
 
 	@Update
