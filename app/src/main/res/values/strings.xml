@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Fitness</string>
 
+    <string name="channel_id">default</string>
+    <string name="channel_name">alarm</string>
+
     <string name="menuOption1">Schede</string>
     <string name="menuOption2">Esercizi</string>
     <string name="menuOption3">Crea</string>
@@ -60,4 +63,6 @@
     <string name="trainingText6">Avvia recupero</string>
     <string name="trainingText7">Avvia serie</string>
     <string name="trainingText8">Hai completato l\'allenamento!</string>
+    <string name="trainingAlarmText">Tempo scaduto! Torna al tuo allenamento</string>
+    <string name="trainingAlarmAction">Spegni</string>
 </resources>

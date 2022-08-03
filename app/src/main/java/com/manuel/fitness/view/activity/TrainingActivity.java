@@ -1,10 +1,19 @@
 package com.manuel.fitness.view.activity;
 
+import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.manuel.fitness.R;
@@ -87,7 +96,13 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 						recupero = false;
 						tempo = scheda.getRecuperoTraSerie();
 						runOnUiThread(() -> status.setText(R.string.trainingText3));
-					} else break;
+					} else {
+						runOnUiThread(() -> {
+							playRingtone();
+							showNotification();
+						});
+						break;
+					}
 
 					runOnUiThread(this::setTempo);
 				}
@@ -95,32 +110,34 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 			runOnUiThread(() -> {
 				next();
-				v.setEnabled(true);
+				if (serieCorrente < esercizio.getSet().getSerie()-1
+						&& esCorrente < giornata.getEsercizi().size())
+					v.setEnabled(true);
 			});
 		});
 		thread.start();
 	}
 
 	public void stopTraining(View v) {
+		showToast(getString(R.string.trainingText8));
 		finish();
 	}
 
 	private void next() {
-		if (serieCorrente == esercizio.getSet().getSerie()-1)
-			setTimer(true);
-		else if (serieCorrente == esercizio.getSet().getSerie()) {
+		if (serieCorrente == esercizio.getSet().getSerie()-1) {
+			if (esCorrente < giornata.getEsercizi().size()-1)
+				setTimer(true);
+		} else if (serieCorrente == esercizio.getSet().getSerie()) {
 			serieCorrente = 0;
 			esCorrente++;
-			if (esCorrente == giornata.getEsercizi().size()) {
-				showToast(getResources().getString(R.string.trainingText8));
-				finish();
-			} else {
-				esercizio = giornata.getEsercizi().get(esCorrente);
-				((ExerciseListAdapter) adapter).setHiglighted(esCorrente);
-				adapter.notifyDataSetChanged();
-				exName.setText(esercizio.getNome());
-				setTimer(false);
-			}
+			esercizio = giornata.getEsercizi().get(esCorrente);
+			ExerciseListAdapter exAdapter = (ExerciseListAdapter) adapter;
+			int prev = exAdapter.getHiglighted();
+			exAdapter.setHiglighted(esCorrente);
+			adapter.notifyItemChanged(prev);
+			adapter.notifyItemChanged(esCorrente);
+			exName.setText(esercizio.getNome());
+			setTimer(false);
 		} else setTimer(false);
 	}
 
@@ -151,6 +168,41 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		}
 	}
 
+	private void playRingtone() {
+		Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+		MediaPlayer mp = MediaPlayer.create(this, alarm);
+		AlarmService.setMP(mp);
+		mp.start();
+	}
+
+	private void showNotification() {
+		Intent stopIntent = new Intent(getApplicationContext(), AlarmService.class);
+		String action = "stop_alarm";
+		stopIntent.setAction(action);
+		AlarmService.setAction(action);
+		PendingIntent stopPendingIntent = PendingIntent.getService(this, 0,
+				stopIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+
+		Intent openIntent = new Intent(getApplicationContext(), getClass());
+		PendingIntent openPendingIntent = PendingIntent.getActivity(this, 0,
+				openIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+		NotificationCompat.Builder builder =
+				new NotificationCompat.Builder(getApplicationContext(), getString(R.string.channel_id))
+						.setSmallIcon(R.drawable.ic_launcher_foreground)
+						.setContentTitle(getString(R.string.trainingAlarmText))
+						.setPriority(NotificationCompat.PRIORITY_HIGH)
+						.setCategory(NotificationCompat.CATEGORY_ALARM)
+						.setContentIntent(openPendingIntent)
+						.addAction(R.drawable.ic_launcher_foreground,
+								getString(R.string.trainingAlarmAction), stopPendingIntent);
+
+		int notification_id = 1;
+		AlarmService.setNotificationID(notification_id);
+		NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
+		manager.notify(notification_id, builder.build());
+	}
+
 	@Override
 	protected void onMoveItem(int fromPos, int toPos) {}
 
@@ -159,4 +211,34 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 	@Override
 	protected void onDeleteFinished() {}
+
+	public static class AlarmService extends IntentService {
+		private static MediaPlayer mp;
+		private static int notificationId;
+		private static String action;
+
+		public AlarmService() {
+			super(AlarmService.class.getSimpleName());
+		}
+
+		@Override
+		protected void onHandleIntent(@Nullable Intent intent) {
+			if (intent != null && intent.getAction().equals(action) && mp != null) {
+				mp.stop();
+				NotificationManagerCompat.from(this).cancel(notificationId);
+			}
+		}
+
+		public static void setMP(MediaPlayer mp) {
+			AlarmService.mp = mp;
+		}
+
+		public static void setNotificationID(int notificationId) {
+			AlarmService.notificationId = notificationId;
+		}
+
+		public static void setAction(String action) {
+			AlarmService.action = action;
+		}
+	}
 }

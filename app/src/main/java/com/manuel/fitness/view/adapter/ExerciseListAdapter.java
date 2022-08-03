@@ -35,6 +35,10 @@ public class ExerciseListAdapter extends GenericListAdapter<Esercizio, ExerciseL
         return new ExerciseViewHolder(v);
     }
 
+    public int getHiglighted() {
+        return higlighted;
+    }
+
     public void setHiglighted(int higlighted) {
         this.higlighted = higlighted;
     }
