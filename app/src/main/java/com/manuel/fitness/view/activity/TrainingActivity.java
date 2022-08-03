@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.manuel.fitness.model.Converters;
 import com.manuel.fitness.model.entity.Esercizio;
 import com.manuel.fitness.model.entity.Giornata;
 import com.manuel.fitness.model.entity.Scheda;
+import com.manuel.fitness.model.entity.set.RepetitionSet;
 import com.manuel.fitness.model.entity.set.TimeSet;
 import com.manuel.fitness.view.adapter.ExerciseListAdapter;
 
@@ -36,6 +38,8 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 	private LocalTime tempo;
 	private int esCorrente, serieCorrente;
 	private boolean recupero;
+
+	private TimerController tc;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,8 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 		exName.setText(esercizio.getNome());
 		setTimer(false);
+
+		recupero = esercizio.getSet() instanceof TimeSet;
 	}
 
 	@Override
@@ -75,60 +81,30 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 	public void avviaTimer(View v) {
 		v.setEnabled(false);
-		serieCorrente++;
-		execSerie.setText(String.valueOf(serieCorrente));
 
-		recupero = esercizio.getSet() instanceof TimeSet;
-		Thread thread = new Thread(() -> {
-			long lastTime = System.currentTimeMillis();
-			while(true) {
-				long currTime = System.currentTimeMillis();
-				if (currTime-lastTime >= 1000) {
-					lastTime = currTime;
+		if (esercizio.getSet() instanceof RepetitionSet) {
+			serieCorrente++;
+			execSerie.setText(String.valueOf(serieCorrente));
+		}
 
-					if (tempo.getSecond() > 0)
-						tempo = tempo.minusSeconds(1);
-					else if (tempo.getMinute() > 0)
-						tempo = tempo.minusMinutes(1).withSecond(59);
-					else if (tempo.getHour() > 0)
-						tempo = tempo.minusHours(1).withMinute(59);
-					else if (recupero) {
-						recupero = false;
-						tempo = scheda.getRecuperoTraSerie();
-						runOnUiThread(() -> status.setText(R.string.trainingText3));
-					} else {
-						runOnUiThread(() -> {
-							playRingtone();
-							showNotification();
-						});
-						break;
-					}
-
-					runOnUiThread(this::setTempo);
-				}
-			}
-
-			runOnUiThread(() -> {
-				next();
-				if (serieCorrente < esercizio.getSet().getSerie()-1
-						&& esCorrente < giornata.getEsercizi().size())
-					v.setEnabled(true);
-			});
-		});
-		thread.start();
+		int millis = (tempo.getHour()*3600+tempo.getMinute()*60+tempo.getSecond())*1000;
+		tc = new TimerController(millis, 1000);
+		tc.start();
 	}
 
 	public void stopTraining(View v) {
-		showToast(getString(R.string.trainingText8));
+		if (tc != null)
+			tc.cancel();
 		finish();
 	}
 
 	private void next() {
 		if (serieCorrente == esercizio.getSet().getSerie()-1) {
-			if (esCorrente < giornata.getEsercizi().size()-1)
+			if (esCorrente < giornata.getEsercizi().size())
 				setTimer(true);
 		} else if (serieCorrente == esercizio.getSet().getSerie()) {
 			serieCorrente = 0;
+			execSerie.setText(String.valueOf(serieCorrente));
 			esCorrente++;
 			esercizio = giornata.getEsercizi().get(esCorrente);
 			ExerciseListAdapter exAdapter = (ExerciseListAdapter) adapter;
@@ -139,6 +115,7 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 			exName.setText(esercizio.getNome());
 			setTimer(false);
 		} else setTimer(false);
+		recupero = esercizio.getSet() instanceof TimeSet;
 	}
 
 	private void setTimer(boolean cambioEsercizio) {
@@ -190,7 +167,8 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		NotificationCompat.Builder builder =
 				new NotificationCompat.Builder(getApplicationContext(), getString(R.string.channel_id))
 						.setSmallIcon(R.drawable.ic_launcher_foreground)
-						.setContentTitle(getString(R.string.trainingAlarmText))
+						.setContentTitle(getString(R.string.trainingAlarmTitle))
+						.setContentText(getString(R.string.trainingAlarmText))
 						.setPriority(NotificationCompat.PRIORITY_HIGH)
 						.setCategory(NotificationCompat.CATEGORY_ALARM)
 						.setContentIntent(openPendingIntent)
@@ -239,6 +217,61 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 		public static void setAction(String action) {
 			AlarmService.action = action;
+		}
+	}
+
+	private class TimerController extends CountDownTimer {
+
+		public TimerController(long millisInFuture, long countDownInterval) {
+			super(millisInFuture, countDownInterval);
+		}
+
+		@Override
+		public void onTick(long l) {
+			if (tempo.getSecond() > 0)
+				tempo = tempo.minusSeconds(1);
+			else if (tempo.getMinute() > 0)
+				tempo = tempo.minusMinutes(1).withSecond(59);
+			else if (tempo.getHour() > 0)
+				tempo = tempo.minusHours(1).withMinute(59);
+
+			runOnUiThread(TrainingActivity.this::setTempo);
+		}
+
+		@Override
+		public void onFinish() {
+			if (recupero) {
+				if (serieCorrente < esercizio.getSet().getSerie()-1
+						|| esCorrente < giornata.getEsercizi().size()-1) {
+					recupero = false;
+					tempo = scheda.getRecuperoTraSerie();
+					runOnUiThread(() -> {
+						setTempo();
+						setStatus(1);
+
+						startBtn.setEnabled(true);
+					});
+				}
+
+				runOnUiThread(() -> {
+					playRingtone();
+					showNotification();
+
+					serieCorrente++;
+					execSerie.setText(String.valueOf(serieCorrente));
+				});
+			} else {
+				runOnUiThread(() -> {
+					playRingtone();
+					showNotification();
+					next();
+
+					if (esCorrente < giornata.getEsercizi().size()
+							|| serieCorrente < esercizio.getSet().getSerie()-1)
+						startBtn.setEnabled(true);
+					else showToast(getString(R.string.trainingText8));
+				});
+			}
 		}
 	}
 }

@@ -22,6 +22,7 @@ public class MainActivity extends GenericActivity {
         int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id),
                 getString(R.string.channel_name), importance);
+        channel.enableLights(true);
 
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
