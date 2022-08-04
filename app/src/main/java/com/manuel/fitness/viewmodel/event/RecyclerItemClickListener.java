@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.manuel.fitness.R;
+import com.manuel.fitness.view.adapter.GenericListAdapter;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
 	private final OnItemClickListener listener;
@@ -30,8 +30,11 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
 					View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
 					if (child == null) return;
 
-					View handler = child.findViewById(R.id.handler);
-					if (!sortable || !viewClicking(e, handler)) {
+					GenericListAdapter<?, ?> adapter =
+							(GenericListAdapter<?, ?>) recyclerView.getAdapter();
+					if (adapter == null) return;
+
+					if (!sortable || !adapter.isSorting()) {
 						int position = recyclerView.getChildAdapterPosition(child);
 						listener.onLongItemClick(child, position);
 
@@ -41,12 +44,6 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
 						}
 					}
 				}
-			}
-
-			private boolean viewClicking(MotionEvent e, View view) {
-				return e.getX() >= view.getX() && e.getY() >= view.getY()
-						&& e.getX() <= view.getX()+view.getWidth()
-						&& e.getY() <= view.getY()+view.getHeight();
 			}
 		});
 	}

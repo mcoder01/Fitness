@@ -39,7 +39,9 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 	private int esCorrente, serieCorrente;
 	private boolean recupero;
 
+	private MediaPlayer mp;
 	private TimerController tc;
+	private boolean showEndingMessage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,10 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		setTimer(false);
 
 		recupero = esercizio.getSet() instanceof TimeSet;
+
+		Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+		mp = MediaPlayer.create(this, alarm);
+		AlarmService.setMP(mp);
 	}
 
 	@Override
@@ -95,13 +101,19 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 	public void stopTraining(View v) {
 		if (tc != null)
 			tc.cancel();
+
+		if (showEndingMessage)
+			showToast(getString(R.string.trainingText8));
 		finish();
 	}
 
-	private void next() {
+	private boolean next() {
 		if (serieCorrente == esercizio.getSet().getSerie()-1) {
-			if (esCorrente < giornata.getEsercizi().size())
+			if (esCorrente < giornata.getEsercizi().size()-1)
 				setTimer(true);
+			else if (esercizio.getSet() instanceof TimeSet)
+				setTimer(false);
+			else return false;
 		} else if (serieCorrente == esercizio.getSet().getSerie()) {
 			serieCorrente = 0;
 			execSerie.setText(String.valueOf(serieCorrente));
@@ -116,19 +128,22 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 			setTimer(false);
 		} else setTimer(false);
 		recupero = esercizio.getSet() instanceof TimeSet;
+		return true;
 	}
 
 	private void setTimer(boolean cambioEsercizio) {
-		if (esercizio.getSet() instanceof TimeSet) {
-			TimeSet ts = (TimeSet) esercizio.getSet();
-			tempo = ts.getTempo();
-			setStatus(0);
-		} else {
+		if (esercizio.getSet() instanceof RepetitionSet || recupero) {
+			recupero = false;
 			if (cambioEsercizio)
 				tempo = scheda.getRecuperoTraEsercizi();
 			else tempo = scheda.getRecuperoTraSerie();
 			setStatus(1);
+		} else {
+			TimeSet ts = (TimeSet) esercizio.getSet();
+			tempo = ts.getTempo();
+			setStatus(0);
 		}
+
 		setTempo();
 	}
 
@@ -146,9 +161,6 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 	}
 
 	private void playRingtone() {
-		Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-		MediaPlayer mp = MediaPlayer.create(this, alarm);
-		AlarmService.setMP(mp);
 		mp.start();
 	}
 
@@ -202,7 +214,8 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		@Override
 		protected void onHandleIntent(@Nullable Intent intent) {
 			if (intent != null && intent.getAction().equals(action) && mp != null) {
-				mp.stop();
+				mp.pause();
+				mp.seekTo(0);
 				NotificationManagerCompat.from(this).cancel(notificationId);
 			}
 		}
@@ -221,7 +234,6 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 	}
 
 	private class TimerController extends CountDownTimer {
-
 		public TimerController(long millisInFuture, long countDownInterval) {
 			super(millisInFuture, countDownInterval);
 		}
@@ -243,15 +255,11 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 			if (recupero) {
 				if (serieCorrente < esercizio.getSet().getSerie()-1
 						|| esCorrente < giornata.getEsercizi().size()-1) {
-					recupero = false;
-					tempo = scheda.getRecuperoTraSerie();
 					runOnUiThread(() -> {
-						setTempo();
-						setStatus(1);
-
+						setTimer(serieCorrente == esercizio.getSet().getSerie()-1);
 						startBtn.setEnabled(true);
 					});
-				}
+				} else showToast(getString(R.string.trainingText8));
 
 				runOnUiThread(() -> {
 					playRingtone();
@@ -264,12 +272,10 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 				runOnUiThread(() -> {
 					playRingtone();
 					showNotification();
-					next();
 
-					if (esCorrente < giornata.getEsercizi().size()
-							|| serieCorrente < esercizio.getSet().getSerie()-1)
+					if (next())
 						startBtn.setEnabled(true);
-					else showToast(getString(R.string.trainingText8));
+					else showEndingMessage = true;
 				});
 			}
 		}

@@ -24,6 +24,7 @@ public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder>
 
     private final LinkedList<T> selectedItems;
     private final boolean selectable, sortable;
+    private boolean sorting;
 
     public GenericListAdapter(ListActivity<T, V> activity, LinkedList<T> list, int resId,
                               boolean selectable, boolean sortable) {
@@ -59,10 +60,12 @@ public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder>
             holder.getHandler().setVisibility(View.VISIBLE);
             holder.getHandler().setOnTouchListener((v, event) -> {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    sorting = true;
                     activity.getTouchHelper().startDrag(holder);
                     v.performClick();
                     return true;
-                }
+                } else if (event.getActionMasked() == MotionEvent.ACTION_UP)
+                    sorting = false;
 
                 return false;
             });
@@ -102,6 +105,10 @@ public abstract class GenericListAdapter<T extends Entity, V extends ViewHolder>
 
     public boolean isSortable() {
         return sortable;
+    }
+
+    public boolean isSorting() {
+        return sorting;
     }
 
     public int getSelectedRows() {
