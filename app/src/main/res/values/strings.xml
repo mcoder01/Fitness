@@ -62,7 +62,8 @@
     <string name="trainingText5">Termina allenamento</string>
     <string name="trainingText6">Avvia recupero</string>
     <string name="trainingText7">Avvia serie</string>
-    <string name="trainingText8">Hai completato l\'allenamento!</string>
+    <string name="trainingText8">Salta serie</string>
+    <string name="trainingText9">Hai completato l\'allenamento!</string>
     <string name="trainingAlarmTitle">Fitness</string>
     <string name="trainingAlarmText">Tempo scaduto!</string>
     <string name="trainingAlarmAction">Spegni</string>

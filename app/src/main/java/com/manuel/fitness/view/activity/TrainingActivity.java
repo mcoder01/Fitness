@@ -30,7 +30,7 @@ import java.time.LocalTime;
 
 public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapter.ExerciseViewHolder> {
 	private TextView execSerie, exName, status, ore, min, sec;
-	private Button startBtn;
+	private Button startBtn, skipBtn;
 
 	private Scheda scheda;
 	private Giornata giornata;
@@ -65,13 +65,14 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		min = findViewById(R.id.min);
 		sec = findViewById(R.id.sec);
 		startBtn = findViewById(R.id.startBtn);
+		skipBtn = findViewById(R.id.skipBtn);
 
 		exName.setText(esercizio.getNome());
 		setTimer(false);
 
 		recupero = esercizio.getSet() instanceof TimeSet;
 
-		Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+		Uri alarm = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 		mp = MediaPlayer.create(this, alarm);
 		AlarmService.setMP(mp);
 	}
@@ -87,6 +88,7 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 	public void avviaTimer(View v) {
 		v.setEnabled(false);
+		skipBtn.setEnabled(false);
 
 		if (esercizio.getSet() instanceof RepetitionSet) {
 			serieCorrente++;
@@ -98,12 +100,21 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 		tc.start();
 	}
 
+	public void saltaSerie(View v) {
+		serieCorrente++;
+		recupero = false;
+		if (!next()) {
+			showEndingMessage = true;
+			stopTraining(v);
+		} else execSerie.setText(String.valueOf(serieCorrente));
+	}
+
 	public void stopTraining(View v) {
 		if (tc != null)
 			tc.cancel();
 
 		if (showEndingMessage)
-			showToast(getString(R.string.trainingText8));
+			showToast(getString(R.string.trainingText9));
 		finish();
 	}
 
@@ -115,17 +126,19 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 				setTimer(false);
 			else return false;
 		} else if (serieCorrente == esercizio.getSet().getSerie()) {
-			serieCorrente = 0;
-			execSerie.setText(String.valueOf(serieCorrente));
-			esCorrente++;
-			esercizio = giornata.getEsercizi().get(esCorrente);
-			ExerciseListAdapter exAdapter = (ExerciseListAdapter) adapter;
-			int prev = exAdapter.getHiglighted();
-			exAdapter.setHiglighted(esCorrente);
-			adapter.notifyItemChanged(prev);
-			adapter.notifyItemChanged(esCorrente);
-			exName.setText(esercizio.getNome());
-			setTimer(false);
+			if (esCorrente < giornata.getEsercizi().size()-1) {
+				serieCorrente = 0;
+				execSerie.setText(String.valueOf(serieCorrente));
+				esCorrente++;
+				esercizio = giornata.getEsercizi().get(esCorrente);
+				ExerciseListAdapter exAdapter = (ExerciseListAdapter) adapter;
+				int prev = exAdapter.getHiglighted();
+				exAdapter.setHiglighted(esCorrente);
+				adapter.notifyItemChanged(prev);
+				adapter.notifyItemChanged(esCorrente);
+				exName.setText(esercizio.getNome());
+				setTimer(false);
+			} else return false;
 		} else setTimer(false);
 		recupero = esercizio.getSet() instanceof TimeSet;
 		return true;
@@ -178,14 +191,12 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 
 		NotificationCompat.Builder builder =
 				new NotificationCompat.Builder(getApplicationContext(), getString(R.string.channel_id))
-						.setSmallIcon(R.drawable.ic_launcher_foreground)
+						.setSmallIcon(R.mipmap.ic_launcher)
 						.setContentTitle(getString(R.string.trainingAlarmTitle))
 						.setContentText(getString(R.string.trainingAlarmText))
 						.setPriority(NotificationCompat.PRIORITY_HIGH)
-						.setCategory(NotificationCompat.CATEGORY_ALARM)
 						.setContentIntent(openPendingIntent)
-						.addAction(R.drawable.ic_launcher_foreground,
-								getString(R.string.trainingAlarmAction), stopPendingIntent);
+						.addAction(0, getString(R.string.trainingAlarmAction), stopPendingIntent);
 
 		int notification_id = 1;
 		AlarmService.setNotificationID(notification_id);
@@ -259,7 +270,7 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 						setTimer(serieCorrente == esercizio.getSet().getSerie()-1);
 						startBtn.setEnabled(true);
 					});
-				} else showToast(getString(R.string.trainingText8));
+				} else showToast(getString(R.string.trainingText9));
 
 				runOnUiThread(() -> {
 					playRingtone();
@@ -273,9 +284,10 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 					playRingtone();
 					showNotification();
 
-					if (next())
+					if (next()) {
 						startBtn.setEnabled(true);
-					else showEndingMessage = true;
+						skipBtn.setEnabled(true);
+					} else showEndingMessage = true;
 				});
 			}
 		}
