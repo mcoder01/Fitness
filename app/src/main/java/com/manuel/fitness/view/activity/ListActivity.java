@@ -1,5 +1,6 @@
 package com.manuel.fitness.view.activity;
 
+import android.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -87,21 +88,31 @@ public abstract class ListActivity<T extends Entity, V extends GenericListAdapte
 				}
 			else endSelection();
 		} else if (item.getItemId() == R.id.deleteSelected) {
-			adapter.getList().removeIf(t -> {
-				if (adapter.getSelectedItems().contains(t)) {
-					adapter.getSelectedItems().remove(t);
-					onDeleteItem(t);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.listDeletionMsg);
 
-					int index = adapter.getList().indexOf(t);
-					adapter.notifyItemRemoved(index);
-					return true;
-				}
+			builder.setPositiveButton(R.string.listDeletionPositive, (dialog, which) -> {
+				adapter.getList().removeIf(t -> {
+					if (adapter.getSelectedItems().contains(t)) {
+						adapter.getSelectedItems().remove(t);
+						onDeleteItem(t);
 
-				return false;
+						int index = adapter.getList().indexOf(t);
+						adapter.notifyItemRemoved(index);
+						return true;
+					}
+
+					return false;
+				});
+
+				endSelection();
+				onDeleteFinished();
 			});
 
-			endSelection();
-			onDeleteFinished();
+			builder.setNegativeButton(R.string.listDeletionNegative,
+					(dialog, which) -> dialog.cancel());
+
+			builder.create().show();
 		}
 
 		return super.onOptionsItemSelected(item);

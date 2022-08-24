@@ -10,6 +10,10 @@
     <string name="menuOption4">Elimina</string>
     <string name="menuOption5">Seleziona tutto</string>
 
+    <string name="listDeletionMsg">Sei sicuro di voler eliminare gli elementi selezionati?</string>
+    <string name="listDeletionPositive">Si</string>
+    <string name="listDeletionNegative">No</string>
+
     <string name="boardListText1">Clicca + per aggiungere una scheda</string>
     <string name="boardListText2">Crea la tua prima scheda</string>
     <string name="boardListText3">Giorni:</string>
@@ -67,4 +71,5 @@
     <string name="trainingAlarmTitle">Fitness</string>
     <string name="trainingAlarmText">Tempo scaduto!</string>
     <string name="trainingAlarmAction">Spegni</string>
+    <string name="boardDeletionMsg">Sei sicuro di voler eliminare questa scheda?</string>
 </resources>

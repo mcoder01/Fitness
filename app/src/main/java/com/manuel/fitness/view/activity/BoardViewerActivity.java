@@ -1,5 +1,6 @@
 package com.manuel.fitness.view.activity;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -90,8 +91,18 @@ public class BoardViewerActivity extends ListActivity<Esercizio, ExerciseListAda
 	}
 
 	public void eliminaScheda(View v) {
-		controller.deleteScheda(scheda);
-		finish();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.boardDeletionMsg);
+		builder.setPositiveButton(R.string.listDeletionPositive, (dialog, which) -> {
+			dialog.dismiss();
+			controller.deleteScheda(scheda);
+			finish();
+		});
+
+		builder.setNegativeButton(R.string.listDeletionNegative,
+				(dialog, which) -> dialog.cancel());
+
+		builder.create().show();
 	}
 
 	public void avvia(View v) {

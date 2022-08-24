@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class TrainingActivity extends ListActivity<Esercizio, ExerciseListAdapte
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_training);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		scheda = (Scheda) getIntent().getExtras().get(Scheda.class.toString());
 		giornata = (Giornata) getIntent().getExtras().get(Giornata.class.toString());
